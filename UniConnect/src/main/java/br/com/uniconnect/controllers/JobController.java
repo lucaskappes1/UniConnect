@@ -38,7 +38,6 @@ public class JobController {
 	
 	@PostMapping
 	public ResponseEntity createJob(@RequestBody JobRequestDTO jobRequest) {
-		
 		Job job= new Job(jobRequest.type(), jobRequest.promoter(), jobRequest.city(),
 				jobRequest.model(), jobRequest.salary(), jobRequest.description());
 		jobRepository.save(job);

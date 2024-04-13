@@ -16,7 +16,7 @@ public class Job {
 	private String type;
 	private String promoter;
 	private String city;
-	//@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	private Model model;
 	private Double salary;
 	private String description;
