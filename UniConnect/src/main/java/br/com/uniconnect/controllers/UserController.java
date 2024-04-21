@@ -1,5 +1,7 @@
 package br.com.uniconnect.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.uniconnect.dtos.AuthenticationDTO;
 import br.com.uniconnect.dtos.LoginResponseDTO;
 import br.com.uniconnect.dtos.RegisterDTO;
+import br.com.uniconnect.dtos.UserDataDTO;
+import br.com.uniconnect.dtos.UserIdDTO;
 import br.com.uniconnect.entities.User;
 import br.com.uniconnect.infra.TokenService;
 import br.com.uniconnect.repositories.UserRepository;
@@ -33,13 +37,9 @@ public class UserController {
 
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody AuthenticationDTO data) {
-
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-
 		var auth = this.authenticationManager.authenticate(usernamePassword);
-		
 		var token = tokenService.generateToken((User) auth.getPrincipal());
-		
 		return ResponseEntity.ok(new LoginResponseDTO(token));
 
 	}
@@ -58,9 +58,18 @@ public class UserController {
 	}
 	
 	@GetMapping("/userdata")
-	public User getUserData(@RequestBody AuthenticationDTO data) {
-		User s = (User) userRepository.findByEmail(data.email());
-		s.setPassword(null);
-		return s;
+	public ResponseEntity getUserData(@RequestBody UserIdDTO data) {
+		Optional<User> s = userRepository.findById(data.userId());
+		return ResponseEntity.ok(new UserDataDTO(
+				s.get().getId(),
+				s.get().getEmail(),
+				s.get().getName(),
+				s.get().getTelefone(),
+				s.get().getLogradouro(),
+				s.get().getNumero(),
+				s.get().getBairro(),
+				s.get().getCidade(),
+				s.get().getEstado(),
+				s.get().getCurso()));
 	}
 }
