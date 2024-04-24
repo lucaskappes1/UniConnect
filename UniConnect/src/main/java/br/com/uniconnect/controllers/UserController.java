@@ -1,5 +1,6 @@
 package br.com.uniconnect.controllers;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.uniconnect.dtos.AuthenticationDTO;
 import br.com.uniconnect.dtos.LoginResponseDTO;
@@ -21,6 +25,7 @@ import br.com.uniconnect.dtos.UserIdDTO;
 import br.com.uniconnect.entities.User;
 import br.com.uniconnect.infra.TokenService;
 import br.com.uniconnect.repositories.UserRepository;
+import br.com.uniconnect.services.UserService;
 
 @RequestMapping("/auth")
 @RestController
@@ -34,6 +39,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired 
+	private UserService userService;
 
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody AuthenticationDTO data) {
@@ -58,18 +66,26 @@ public class UserController {
 	}
 	
 	@GetMapping("/userdata")
-	public ResponseEntity getUserData(@RequestBody UserIdDTO data) {
-		Optional<User> s = userRepository.findById(data.userId());
+	public ResponseEntity getUserData(@RequestHeader("Authorization") String token) throws IOException {
+		String email = tokenService.validateToken(token);
+		User s = (User) userRepository.findByEmail(email);
 		return ResponseEntity.ok(new UserDataDTO(
-				s.get().getId(),
-				s.get().getEmail(),
-				s.get().getName(),
-				s.get().getTelefone(),
-				s.get().getLogradouro(),
-				s.get().getNumero(),
-				s.get().getBairro(),
-				s.get().getCidade(),
-				s.get().getEstado(),
-				s.get().getCurso()));
+				s.getId(),
+				s.getEmail(),
+				s.getName(),
+				s.getTelefone(),
+				s.getLogradouro(),
+				s.getNumero(),
+				s.getBairro(),
+				s.getCidade(),
+				s.getEstado(),
+				s.getCurso(),
+				userService.getImage(s.getId()).getContentAsByteArray()));
+	}
+	
+	@PostMapping("/profilepicture")
+	public ResponseEntity saveProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam Long userId) {
+		userService.saveImage(file, userId);
+		return ResponseEntity.ok().build();
 	}
 }

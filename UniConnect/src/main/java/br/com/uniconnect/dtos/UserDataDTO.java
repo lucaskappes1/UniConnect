@@ -12,7 +12,8 @@ String numero,
 String bairro,
 String cidade,
 String estado,
-String curso) {
+String curso,
+byte[] imageData) {
 	
 }
 

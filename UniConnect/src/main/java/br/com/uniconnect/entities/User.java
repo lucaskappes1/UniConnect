@@ -32,6 +32,17 @@ public class User implements UserDetails{
 	private String estado;
 	private String curso;
 	
+	private String pathProfilePicture;
+	
+	
+	public String getPathProfilePicture() {
+		return pathProfilePicture;
+	}
+
+	public void setPathProfilePicture(String pathProfilePicture) {
+		this.pathProfilePicture = pathProfilePicture;
+	}
+
 	public String getTelefone() {
 		return telefone;
 	}
@@ -171,5 +182,7 @@ public class User implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+	
 	
 }

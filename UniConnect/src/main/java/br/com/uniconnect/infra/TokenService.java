@@ -11,6 +11,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import br.com.uniconnect.entities.User;
 
@@ -26,6 +27,7 @@ public class TokenService {
 			String token = JWT.create()
 						.withIssuer("uniconnect")
 						.withSubject(user.getEmail())
+						.withClaim("userId", user.getId())
 						.withExpiresAt(generateExpirationDate())
 						.sign(algorithm);
 			return token;
