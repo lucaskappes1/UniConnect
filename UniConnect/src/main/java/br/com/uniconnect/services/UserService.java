@@ -22,7 +22,9 @@ import br.com.uniconnect.repositories.UserRepository;
 @Service
 public class UserService implements UserDetailsService {
 
-	private String basePath = "src/main/resources/static/";
+	private String basePathCV = "src/main/resources/static/CV/";
+	private String basePathProfilePicture = "src/main/resources/static/profilepicture/";
+	
 	@Autowired
 	private UserRepository userRepository;
 
@@ -34,7 +36,7 @@ public class UserService implements UserDetailsService {
 
 	public UrlResource getImage(Long userId) {
 		Optional<User> user = userRepository.findById(userId);
-		String fullPath = basePath + user.get().getPathProfilePicture();
+		String fullPath = basePathProfilePicture + user.get().getPathProfilePicture();
 
 		Path filePath = Paths.get(fullPath);
 
@@ -55,7 +57,7 @@ public class UserService implements UserDetailsService {
 
 	public void saveImage(MultipartFile file, Long userId) {
 		Optional<User> user = userRepository.findById(userId);
-		String fullPath = basePath + user.get().getId() + "";
+		String fullPath = basePathProfilePicture + user.get().getId() + "";
 		Path userDirectory = Paths.get(fullPath);
 		try {
 			if(!Files.exists(userDirectory)) {
@@ -66,6 +68,47 @@ public class UserService implements UserDetailsService {
 			Path filePath = userDirectory.resolve(fileName);
 			Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 			user.get().setPathProfilePicture(user.get().getId() + "/" + fileName);
+			userRepository.save(user.get());
+			
+			} catch(IOException e) {
+				
+			}
+	}
+	
+	public UrlResource getCV(Long userId) {
+		Optional<User> user = userRepository.findById(userId);
+		String fullPath = basePathCV + user.get().getPathCV();
+
+		Path filePath = Paths.get(fullPath);
+
+		try {
+			UrlResource resource = new UrlResource(filePath.toUri());
+
+			if (resource.exists() || resource.isReadable()) {
+				return resource;
+			} else {
+				throw new RuntimeException("could not read media");
+			}
+
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("media not found");
+		}
+
+	}
+
+	public void saveCV(MultipartFile file, Long userId) {
+		Optional<User> user = userRepository.findById(userId);
+		String fullPath = basePathCV + user.get().getId() + "";
+		Path userDirectory = Paths.get(fullPath);
+		try {
+			if(!Files.exists(userDirectory)) {
+				Files.createDirectories(userDirectory);
+			}
+		
+			String fileName = "CV.pdf";
+			Path filePath = userDirectory.resolve(fileName);
+			Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+			user.get().setPathCV(user.get().getId() + "/" + fileName);
 			userRepository.save(user.get());
 			
 			} catch(IOException e) {

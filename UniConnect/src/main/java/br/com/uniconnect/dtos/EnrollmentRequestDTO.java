@@ -1,5 +1,5 @@
 package br.com.uniconnect.dtos;
 
-public record EnrollmentRequestDTO(Long userId, Long jobId) {
+public record EnrollmentRequestDTO(Long id) {
 
 }

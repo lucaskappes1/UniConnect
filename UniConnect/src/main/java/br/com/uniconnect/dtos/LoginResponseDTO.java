@@ -1,5 +1,5 @@
 package br.com.uniconnect.dtos;
 
-public record LoginResponseDTO(String token) {
+public record LoginResponseDTO(String token, UserResponseDTO user) {
 
 }

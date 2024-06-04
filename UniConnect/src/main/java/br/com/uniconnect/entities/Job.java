@@ -2,6 +2,7 @@ package br.com.uniconnect.entities;
 
 import java.time.LocalDate;
 
+import br.com.uniconnect.dtos.StateIdDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,46 +17,87 @@ public class Job {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String type;
+	private Long idState;
+	private String stateName;
+	private String title;
+	@Enumerated(EnumType.STRING)
+	private Model workStyle;
+	@Enumerated(EnumType.STRING)
+	private EmploymentType employmentType;
 	private String promoter;
+	private Double salary;
 	private String city;
 	@Enumerated(EnumType.STRING)
-	private Model model;
-	private Double salary;
+	private StatusJob status;
 	private String description;
-	private LocalDate jobDate;
-	
-	
-	
-	public Job(String type, String promoter, String city, Model model, Double salary, String description) {
-		this.type = type;
+	private LocalDate date;
+
+	public Long getIdState() {
+		return idState;
+	}
+
+	public void setIdState(Long idState) {
+		this.idState = idState;
+	}
+
+	public Model getWorkStyle() {
+		return workStyle;
+	}
+
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+
+	public void setWorkStyle(Model workStyle) {
+		this.workStyle = workStyle;
+	}
+
+	public Job(String title, String promoter, String city, Model workStyle,
+			EmploymentType employmentType, Double salary, String description, Long state, String stateName) {
+		this.title = title;
+		this.idState = state;
 		this.promoter = promoter;
 		this.city = city;
-		this.model = model;
+		this.workStyle = workStyle;
 		this.salary = salary;
 		this.description = description;
+		this.status = StatusJob.ATIVO;
+		this.employmentType = employmentType;
+		this.stateName = stateName;
 	}
-	
+
 	@PrePersist
 	protected void onCreate() {
-		jobDate = LocalDate.now();
+		date = LocalDate.now();
 	}
-	
-	//getters and setters
+
+	// getters and setters
 	public Long getId() {
 		return id;
+	}
+
+	public EmploymentType getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(EmploymentType employmentType) {
+		this.employmentType = employmentType;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getPromoter() {
@@ -74,14 +116,6 @@ public class Job {
 		this.city = city;
 	}
 
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(Model model) {
-		this.model = model;
-	}
-
 	public Double getSalary() {
 		return salary;
 	}
@@ -97,13 +131,21 @@ public class Job {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public LocalDate getJobDate() {
-		return jobDate;
+
+	public StatusJob getStatus() {
+		return status;
 	}
 
-	public void setJobDate(LocalDate jobDate) {
-		this.jobDate = jobDate;
+	public void setStatus(StatusJob status) {
+		this.status = status;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	public void setSalary(Double salary) {
@@ -111,8 +153,7 @@ public class Job {
 	}
 
 	public Job() {
-		
+
 	}
 
-	
 }
