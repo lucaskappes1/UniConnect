@@ -17,7 +17,7 @@ public class Job {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Long idState;
+	private Long stateId;
 	private String stateName;
 	private String title;
 	@Enumerated(EnumType.STRING)
@@ -33,11 +33,11 @@ public class Job {
 	private LocalDate date;
 
 	public Long getIdState() {
-		return idState;
+		return stateId;
 	}
 
-	public void setIdState(Long idState) {
-		this.idState = idState;
+	public void setIdState(Long stateId) {
+		this.stateId = stateId;
 	}
 
 	public Model getWorkStyle() {
@@ -57,9 +57,9 @@ public class Job {
 	}
 
 	public Job(String title, String promoter, String city, Model workStyle,
-			EmploymentType employmentType, Double salary, String description, Long state, String stateName) {
+			EmploymentType employmentType, Double salary, String description, Long stateId, String stateName) {
 		this.title = title;
-		this.idState = state;
+		this.stateId = stateId;
 		this.promoter = promoter;
 		this.city = city;
 		this.workStyle = workStyle;

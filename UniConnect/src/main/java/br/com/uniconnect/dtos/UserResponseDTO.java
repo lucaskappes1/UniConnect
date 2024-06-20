@@ -1,6 +1,6 @@
 package br.com.uniconnect.dtos;
 
-import java.util.List;
+import br.com.uniconnect.entities.UserRole;
 
 public record UserResponseDTO(
 		String name, 
@@ -10,6 +10,7 @@ public record UserResponseDTO(
 		String adress,
 		String city,
 		Long stateId,
+		UserRole role,
 		byte[] profilePicture
 		) {
 

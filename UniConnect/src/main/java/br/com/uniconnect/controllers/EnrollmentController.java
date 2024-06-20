@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/enrollment")
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 public class EnrollmentController {
 	
 	@Autowired
@@ -62,26 +62,15 @@ public class EnrollmentController {
 	@GetMapping("/list")
 	public ResponseEntity getEnrollmentList(HttpServletRequest request) {
 		User user = (User) request.getAttribute("user");
-		List<Enrollment> enrollmentList = enrollmentRepository.findAll();
+		List<Enrollment> enrollmentList = enrollmentRepository.findByUserId(user.getId());
+		ArrayList<Job> responseList = new ArrayList<>();
 		for(Enrollment e : enrollmentList) {
-			if(e.getId().getIdUsuario() != user.getId()) {
-				enrollmentList.remove(e);
-			}
+			responseList.add(jobRepository.findById(e.getId().getIdVaga()).get());
 		}
 		
-		List<Job> jobList = jobRepository.findAll();
-		ArrayList<Job> responseList = new ArrayList();
-		
-		for(Enrollment e : enrollmentList) {
-			Long jobId = e.getId().getIdVaga();
-			for(Job job : jobList) {
-				if(jobId == job.getId()) {
-					responseList.add(job);
-					break;
-				}
-			}
-		}
 		return ResponseEntity.ok(responseList);
+		
+		
 	}
 	
 	@PatchMapping()

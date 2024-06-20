@@ -36,8 +36,11 @@ public class SecurityConfig {
 		.csrf(csrf -> csrf.disable())
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests(authorizeConfig -> {authorizeConfig
-			.requestMatchers("/**").permitAll();
+			.requestMatchers("/auth/login", "/auth/signup").permitAll()
+			.requestMatchers("/auth/pendinguser", "/job/new", "/job/delete", "/job/edit").hasAnyRole("ADMIN")
+			.anyRequest().authenticated();
 		}).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 		return http.build();
 	}
 	
@@ -47,7 +50,7 @@ public class SecurityConfig {
 		configuration.setAllowedOrigins(Arrays.asList("*"));
 		configuration.setAllowedMethods(Arrays.asList("*"));
 		configuration.setAllowedHeaders(Arrays.asList("*"));
-		configuration.setAllowCredentials(true);
+		//configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
